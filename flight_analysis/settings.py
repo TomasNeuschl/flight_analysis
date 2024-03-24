@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'flight_data',
 ]
 
 MIDDLEWARE = [
@@ -129,3 +130,5 @@ INFLUXDB_USERNAME = None
 INFLUXDB_PASSWORD = None
 INFLUXDB_DATABASE = 'example'
 INFLUXDB_TIMEOUT = 10
+
+CHARFIELD_MAX_LENGTH = 255
