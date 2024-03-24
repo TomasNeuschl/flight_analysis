@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "flight-analysis"
+version = "0.1.0"
+description = ""
+authors = ["Tomáš Neuschl <tm.neu003@gmail.com>"]
+readme = "README.md"
+packages = [{include = "flight_analysis"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+django = "^5.0.3"
+influxdb = "^5.3.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
