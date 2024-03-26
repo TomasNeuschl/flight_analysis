@@ -51,7 +51,7 @@ class FlightAdminForm(forms.ModelForm):
 
 @admin.register(Flight)
 class FlightAdmin(admin.ModelAdmin):
-    inlines = [TelemetryInline, StatusInline]
+    inlines = [StatusInline, TelemetryInline]
     form = FlightAdminForm
 
     def save_model(self, request, obj, form, change):
@@ -67,14 +67,14 @@ class FlightAdmin(admin.ModelAdmin):
             if telemetry_csv_file:
                 telemetry_data = CSVService().parse_data(telemetry_csv_file)
                 tags = {'telemetry_id': obj.telemetry.id}
-                influx_service.delete_data('telemetry_id', obj.telemetry.id)
+                influx_service.delete_data('telemetry_data', 'telemetry_id', obj.telemetry.id)
                 influx_service.write_data('telemetry_data', tags, telemetry_data)
                 obj.telemetry.csv_name = telemetry_csv_file.name
                 obj.telemetry.save()
             if status_csv_file:
                 tags = {'status_id': obj.status.id}
                 status_data = CSVService().parse_data(status_csv_file)
-                influx_service.delete_data('status_id', obj.status.id)
+                influx_service.delete_data('status_data','status_id', obj.status.id)
                 influx_service.write_data('status_data', tags, status_data)
                 obj.status.csv_name = status_csv_file.name
                 obj.status.save()

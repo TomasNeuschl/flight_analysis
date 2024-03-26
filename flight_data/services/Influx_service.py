@@ -21,19 +21,17 @@ class InfluxService:
             influx_data.append(json_data)
         self.client.write_points(influx_data)
 
-    def query_data(self, query):
-        return self.client.query(query)
+    def retrieve_data(self, measurement, tag_key, tag_value):
+        query = f'SELECT * FROM "{measurement}" WHERE "{tag_key}"=\'{tag_value}\''
 
-    def delete_data(self, tag_key, tag_value):
-        query = f"SHOW MEASUREMENTS WHERE \"{tag_key}\" = '{tag_value}'"
         result = self.client.query(query)
 
         # Extracting the measurements
-        measurements = [measurement['name'] for measurement in result.get_points()]
+        return result.raw.get('series')[0]
 
-        # Deleting each measurement
-        for measurement in measurements:
-            self.client.query(f"DROP MEASUREMENT {measurement}")
+    def delete_data(self, measurement, tag_key, tag_value):
+        query = f'DELETE FROM "{measurement}" WHERE "{tag_key}"=\'{tag_value}\''
+        self.client.query(query)
 
     def close(self):
         self.client.close()

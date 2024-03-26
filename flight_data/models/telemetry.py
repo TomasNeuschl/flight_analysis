@@ -22,5 +22,19 @@ class Telemetry(BaseModel):
             host=INFLUXDB_HOST,
             port=INFLUXDB_PORT,
             database=INFLUXDB_DATABASE,
-        ).delete_data("telemetry_id", self.id)
+        ).delete_data("telemetry_data", "telemetry_id", self.id)
         self.save()
+
+    def retrieve_data(self):
+        return InfluxService(
+            host=INFLUXDB_HOST,
+            port=INFLUXDB_PORT,
+            database=INFLUXDB_DATABASE,
+        ).retrieve_data("telemetry_data", "telemetry_id", self.id)
+
+    @property
+    def path_data(self):
+        data = self.retrieve_data()
+        path = [[entry[data['columns'].index('longitude')],
+                 entry[data['columns'].index('latitude')]] for entry in data['values']]
+        return path

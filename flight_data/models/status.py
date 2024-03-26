@@ -22,5 +22,5 @@ class Status(BaseModel):
             host=INFLUXDB_HOST,
             port=INFLUXDB_PORT,
             database=INFLUXDB_DATABASE,
-        ).delete_data("status_id", self.id)
+        ).delete_data("status_data", "status_id", self.id)
         self.save()
