@@ -3,15 +3,16 @@
 {% block submit_buttons_bottom %}
     {{ block.super }}
     <div>
-        <input type="submit" value="Flight analysis" class="default" onclick="openNewTab()">
+        <input type="submit" value="Flight analysis" class="default" onclick="openNewTab('{{ original.id }}')">
     </div>
 {% endblock %}
 
 {% block admin_change_form_document_ready %}
     {{ block.super }}
     <script>
-        function openNewTab() {
-            window.open("http://localhost:8501/", "_blank");
+        function openNewTab(object_id) {
+            var url = 'http://localhost:8501/?flight_id=' + object_id;
+            window.open(url, "_blank");
         }
     </script>
 {% endblock %}
