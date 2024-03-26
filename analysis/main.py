@@ -7,6 +7,7 @@ flight_id = st.query_params.get('flight_id')
 
 telemetry_data = requests.get(f'http://127.0.0.1:8000/api/v1/flight/{flight_id}/telemetry/')
 status_data = requests.get(f'http://127.0.0.1:8000/api/v1/flight/{flight_id}/status/')
+status_data = status_data.json()
 
 data = [{
     "color": [255, 0, 0],
@@ -37,3 +38,14 @@ deck = pdk.Deck(
 )
 
 st.pydeck_chart(deck)
+
+timestamps = [entry['time'] for entry in status_data['signal_quality']]
+rsrq_values = [entry['rsrq'] for entry in status_data['signal_quality']]
+snr_values = [entry['snr'] for entry in status_data['signal_quality']]
+
+df = pd.DataFrame({'Time': timestamps, 'RSRQ (dB)': rsrq_values, 'SNR (dB)': snr_values})
+df['Time'] = pd.to_datetime(df['Time'])
+
+df.set_index('Time', inplace=True)
+
+st.line_chart(df)

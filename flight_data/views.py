@@ -27,11 +27,6 @@ class FlightView(viewsets.GenericViewSet):
     def telemetry(self, request, *args, **kwargs):
         flight = self.get_object()
         telemetry = flight.telemetry
-        telemetry_data = InfluxService(
-            host=INFLUXDB_HOST,
-            port=INFLUXDB_PORT,
-            database=INFLUXDB_DATABASE,
-        ).retrieve_data('telemetry_data', 'telemetry_id', telemetry.id)
         serializer = TelemetrySerializer(data={'path': telemetry.path_data})
         serializer.is_valid(raise_exception=True)
         return Response(serializer.validated_data)
@@ -41,10 +36,6 @@ class FlightView(viewsets.GenericViewSet):
     def status(self, request, *args, **kwargs):
         flight = self.get_object()
         status = flight.status
-        InfluxService(
-            host=INFLUXDB_HOST,
-            port=INFLUXDB_PORT,
-            database=INFLUXDB_DATABASE,
-        ).retrieve_data('status_data', 'status_id', status.id)
-        serializer = StatusSerializer(status)
+        serializer = StatusSerializer(data={'signal_quality': status.signal_quality_data})
+        serializer.is_valid(raise_exception=True)
         return Response(serializer.data)

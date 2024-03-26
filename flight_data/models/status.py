@@ -24,3 +24,27 @@ class Status(BaseModel):
             database=INFLUXDB_DATABASE,
         ).delete_data("status_data", "status_id", self.id)
         self.save()
+
+    def retrieve_data(self):
+        return InfluxService(
+            host=INFLUXDB_HOST,
+            port=INFLUXDB_PORT,
+            database=INFLUXDB_DATABASE,
+        ).retrieve_data("status_data", "status_id", self.id)
+
+    @property
+    def signal_quality_data(self):
+        data = self.retrieve_data()
+        result = []
+        columns = data['columns']
+        values = data['values']
+
+        time_index = columns.index('time')
+        rsrq_index = columns.index('rsrq')
+        snr_index = columns.index('snr')
+
+        for entry in values:
+            entry_dict = {'time': entry[time_index], 'rsrq': entry[rsrq_index],
+                          'snr': entry[snr_index]}
+            result.append(entry_dict)
+        return result
