@@ -17,9 +17,21 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from drf_spectacular.views import SpectacularSwaggerView, SpectacularAPIView
+from rest_framework import routers
+
+from flight_data.views import FlightView
+
+router = routers.DefaultRouter()
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path("schema.yaml", SpectacularAPIView.as_view(), name="schema"),
-    path("schema/swagger-ui/", SpectacularSwaggerView.as_view(url_name="schema"), name="swagger-ui",),
+    path("schema/swagger-ui/", SpectacularSwaggerView.as_view(url_name="schema"),
+         name="swagger-ui"),
+    path('api/v1/flight/<int:pk>/telemetry/', FlightView.as_view({'get': 'telemetry'}),
+         name='telemetry-detail'),
+    path('api/v1/flight/<int:pk>/status/', FlightView.as_view({'get': 'status'}),
+         name='status-detail'),
 ]
+
+urlpatterns += router.urls
