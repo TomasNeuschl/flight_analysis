@@ -1,20 +1,25 @@
 version: '3'
 
 services:
-  web:
-    build: .
-    command: python3 manage.py runserver 0.0.0.0:8000
-    volumes:
-      - ./project:/usr/web/app
-    ports:
-      - "8000:8000"
-    depends_on:
-      - influxdb
-    links:
-      - influxdb
+#  web:
+#    build: .
+#    command: python3 manage.py runserver 0.0.0.0:8000
+#    volumes:
+#      - ./project:/usr/web/app
+#    ports:
+#      - "8000:8000"
+#    depends_on:
+#      - influxdb
+#    links:
+#      - influxdb
 
   influxdb:
-    image: influxdb
+    image: influxdb:1.8
     ports:
-      - "8083:8083"
-      - "8086:8086"
+      - '8086:8086'
+    volumes:
+      - influxdb:/var/lib/influxdb
+    environment:
+      - INFLUXDB_DB=flight_data
+volumes:
+    influxdb:
