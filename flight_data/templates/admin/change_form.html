@@ -1,0 +1,17 @@
+{% extends "admin/change_form.html" %}
+
+{% block submit_buttons_bottom %}
+    {{ block.super }}
+    <div>
+        <input type="submit" value="Flight analysis" class="default" onclick="openNewTab()">
+    </div>
+{% endblock %}
+
+{% block admin_change_form_document_ready %}
+    {{ block.super }}
+    <script>
+        function openNewTab() {
+            window.open("http://localhost:8501/", "_blank");
+        }
+    </script>
+{% endblock %}
