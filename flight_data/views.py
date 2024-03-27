@@ -3,12 +3,10 @@ from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
-from flight_analysis.settings import INFLUXDB_HOST, INFLUXDB_PORT, INFLUXDB_DATABASE
 from flight_data.models.flight import Flight
 from flight_data.serializers.flight import FlightSerializer
 from flight_data.serializers.status import StatusSerializer
 from flight_data.serializers.telemetry import TelemetrySerializer
-from flight_data.services.Influx_service import InfluxService
 
 
 class FlightView(viewsets.GenericViewSet):

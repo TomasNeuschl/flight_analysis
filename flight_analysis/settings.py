@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure---n+)#4(4mabg$nuxl!s-vzh)-825)rx&l-v2yqalnvd(8ni3k
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1', 'web']
 
 
 # Application definition
@@ -146,13 +146,11 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-INFLUXDB_HOST = 'localhost'
+INFLUXDB_HOST = 'influxdb'
 INFLUXDB_PORT = 8086
 INFLUXDB_USERNAME = 'admin'
 INFLUXDB_PASSWORD = 'Password1'
 INFLUXDB_DATABASE = 'flight_data'
 INFLUXDB_TIMEOUT = 10
-
-FLIGHT_DATA_HOST = 'http://127.0.0.1:8000'
 
 CHARFIELD_MAX_LENGTH = 255
