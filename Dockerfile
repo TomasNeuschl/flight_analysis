@@ -29,6 +29,12 @@ RUN poetry config virtualenvs.create false && \
 # Copy the Django application code
 COPY . /app/
 
+# Run Django migrations to create database tables
+RUN python manage.py migrate
+
+# Create a default superuser
+RUN echo "from django.contrib.auth.models import User; User.objects.create_superuser('user', 'user@example.com', 'password')" | python manage.py shell
+
 # Expose the port that Django runs on
 EXPOSE 8000
 
