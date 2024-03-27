@@ -1,17 +1,27 @@
 version: '3'
 
 services:
-#  web:
-#    build: .
-#    command: python3 manage.py runserver 0.0.0.0:8000
-#    volumes:
-#      - ./project:/usr/web/app
-#    ports:
-#      - "8000:8000"
-#    depends_on:
-#      - influxdb
-#    links:
-#      - influxdb
+  web:
+    build: .
+    command: python3 manage.py runserver 0.0.0.0:8000
+    volumes:
+      - ./project:/usr/web/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - influxdb
+    links:
+      - influxdb
+    networks:
+      - my_network
+
+  streamlit:
+    build: .
+    ports:
+      - "8501:8501"
+    command: streamlit run /app/analysis/main.py
+    networks:
+      - my_network
 
   influxdb:
     image: influxdb:1.8
@@ -21,5 +31,10 @@ services:
       - influxdb:/var/lib/influxdb
     environment:
       - INFLUXDB_DB=flight_data
+    networks:
+      - my_network
 volumes:
     influxdb:
+networks:
+  my_network:
+    driver: bridge
