@@ -19,3 +19,6 @@ class Flight(BaseModel):
     class Meta:
         verbose_name = "flight"
         verbose_name_plural = "flights"
+
+    def __str__(self):
+        return self.name
