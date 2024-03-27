@@ -25,7 +25,11 @@ class FlightView(viewsets.GenericViewSet):
     def telemetry(self, request, *args, **kwargs):
         flight = self.get_object()
         telemetry = flight.telemetry
-        serializer = TelemetrySerializer(data={'path': telemetry.path_data})
+        serializer = TelemetrySerializer(data={
+            'path': telemetry.path_data,
+            'speed': telemetry.speed_data,
+            'altitude': telemetry.altitude_data,
+        })
         serializer.is_valid(raise_exception=True)
         return Response(serializer.validated_data)
 

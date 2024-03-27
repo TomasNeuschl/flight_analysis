@@ -7,11 +7,11 @@ flight_id = st.query_params.get('flight_id')
 
 telemetry_data = requests.get(f'http://web:8000/api/v1/flight/{flight_id}/telemetry/')
 if telemetry_data:
-    data = [{
+    path_data = [{
         "color": [255, 0, 0],
         "path": telemetry_data.json()['path']
     }]
-    df = pd.DataFrame(data)
+    df = pd.DataFrame(path_data)
 
     layer = pdk.Layer(
         type='PathLayer',
@@ -36,6 +36,22 @@ if telemetry_data:
     )
 
     st.pydeck_chart(deck)
+
+    speed_data = telemetry_data.json()['speed']
+    timestamps = [entry['time'] for entry in speed_data]
+    speed_values = [entry['speed'] for entry in speed_data]
+
+    df = pd.DataFrame({'Time': timestamps, 'Speed (km/h)': speed_values})
+
+    st.line_chart(df, y='Speed (km/h)')
+
+    altitude_data = telemetry_data.json()['altitude']
+    timestamps = [entry['time'] for entry in altitude_data]
+    altitude_values = [entry['altitude'] for entry in altitude_data]
+
+    df = pd.DataFrame({'Time': timestamps, 'Altitude (m)': altitude_values})
+
+    st.line_chart(df, y='Altitude (m)')
 
 status_data = requests.get(f'http://web:8000/api/v1/flight/{flight_id}/status/')
 if status_data:

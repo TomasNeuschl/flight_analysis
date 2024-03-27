@@ -16,6 +16,10 @@ class Telemetry(BaseModel):
         verbose_name = "telemetry"
         verbose_name_plural = "telemetry"
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._data = None
+
     def delete(self, *args, **kwargs):
         self.csv_name = None
         InfluxService(
@@ -33,8 +37,38 @@ class Telemetry(BaseModel):
         ).retrieve_data("telemetry_data", "telemetry_id", self.id)
 
     @property
+    def data(self):
+        if not self._data:
+            self._data = self.retrieve_data()
+        return self._data
+
+    @property
     def path_data(self):
-        data = self.retrieve_data()
-        path = [[entry[data['columns'].index('longitude')],
+        data = self.data
+        return [[entry[data['columns'].index('longitude')],
                  entry[data['columns'].index('latitude')]] for entry in data['values']]
-        return path
+
+    @staticmethod
+    def _calculate_speed(velocity_x, velocity_y, velocity_z):
+        return ((float(velocity_x) ** 2 + float(velocity_y) ** 2 + float(
+            velocity_z) ** 2) ** 0.5) * 18 / 5
+
+    @property
+    def speed_data(self):
+        data = self.data
+        velocities = [[entry[data['columns'].index('velocity_x')],
+                       entry[data['columns'].index('velocity_y')],
+                       entry[data['columns'].index('velocity_z')],
+                       entry[data['columns'].index('time')]] for entry in
+                      data['values']]
+
+        return [{'speed': self._calculate_speed(entry[0], entry[1], entry[2]),
+                 'time': entry[3]} for entry
+                in velocities]
+
+    @property
+    def altitude_data(self):
+        data = self.data
+        return [{'altitude': entry[data['columns'].index('altitude')],
+                 'time': entry[data['columns'].index('time')]} for entry in
+                data['values']]
